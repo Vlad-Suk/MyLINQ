@@ -1,4 +1,6 @@
-﻿using System;
+﻿//The main porpuse of this project is work with logic of methods.
+//For this reason I didn't do all overloads.
+using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -6,6 +8,11 @@ namespace MyLINQ
 {
     public static class MyLinqExtensions
     {
+        public static void CheckRange<T>(IEnumerable<T> lst)
+        {
+            if (lst.Count() == 0)
+                throw new InvalidOperationException("Sequence contains no elements");
+        }
         public static IEnumerable<T> MyPrepend<T>(this IEnumerable<T> lst, T arg)
         {
             yield return arg;
@@ -35,8 +42,7 @@ namespace MyLINQ
         }
         public static int MyMax(this IEnumerable<int> lst)
         {
-            if (lst.Count() == 0)
-                throw new InvalidOperationException("Sequence contains no elements");
+            CheckRange(lst);
             var max = lst.First();
             foreach (var el in lst)
             {
@@ -47,8 +53,7 @@ namespace MyLINQ
         }
         public static int MyMin(this IEnumerable<int> lst)
         {
-            if (lst.Count() == 0)
-                throw new InvalidOperationException("Sequence contains no elements");
+            CheckRange(lst);
             var min = lst.First();
             foreach (var el in lst)
             {
@@ -77,17 +82,23 @@ namespace MyLINQ
         }
         public static T MyAggregate<T>(this IEnumerable<T> lst, Func<T, T, T> func)
         {
-            if (lst.Count() == 0)
-            {
-                throw new InvalidOperationException("Sequence contains no elements");
-            }
-
+            CheckRange(lst);
             T result = default;
             foreach (var el in lst)
             {
                 result = func(result, el);
             }
             return result;
+        }
+        public static double MyAverage(this IEnumerable<int> lst)
+        {
+            CheckRange(lst);
+            double sum = 0;
+            foreach (var el in lst)
+            {
+                sum += el;
+            }
+            return sum / lst.Count();
         }
     }
 }
