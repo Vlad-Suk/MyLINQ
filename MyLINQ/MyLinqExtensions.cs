@@ -57,6 +57,23 @@ namespace MyLINQ
             }
             return min;
         }
-
+        public static bool MyAll<T>(this IEnumerable<T> lst, Func<T, bool> predicate)
+        {
+            foreach (var el in lst)
+            {
+                if (!predicate(el))
+                    return false;
+            }
+            return true;
+        }
+        public static bool MyAny<T>(this IEnumerable<T> lst, Func<T, bool> predicate)
+        {
+            foreach (var el in lst)
+            {
+                if (predicate(el))
+                    return true;
+            }
+            return false;
+        }
     }
 }
