@@ -75,5 +75,19 @@ namespace MyLINQ
             }
             return false;
         }
+        public static T MyAggregate<T>(this IEnumerable<T> lst, Func<T, T, T> func)
+        {
+            if (lst.Count() == 0)
+            {
+                throw new InvalidOperationException("Sequence contains no elements");
+            }
+
+            T result = default;
+            foreach (var el in lst)
+            {
+                result = func(result, el);
+            }
+            return result;
+        }
     }
 }
