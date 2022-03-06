@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace MyLINQ
 {
@@ -133,6 +134,160 @@ namespace MyLINQ
             foreach (var el in lst)
             {
                 yield return lambda(el);
+            }
+        }
+        public static IEnumerable<Tout> MyManySelect<Tin, Tout>(this IEnumerable<Tin> lst,
+            Func<Tin, IEnumerable<Tout>> inElToTempOutLst)
+        {
+            foreach (var el in lst)
+            {
+                var tempOutList = inElToTempOutLst(el);
+                foreach (var outEl in tempOutList)
+                    yield return outEl;
+            }
+        }
+        public static IEnumerable<T> MySkip<T>(this IEnumerable<T> lst, int arg)
+        {
+            var count = 0;
+            foreach (var el in lst)
+            {
+                count++;
+                if (count <= arg)
+                {
+                    continue;
+                }
+                yield return el;
+            }
+        }
+        public static IEnumerable<T> MySkipLast<T>(this IEnumerable<T> lst, int arg)
+        {
+            var i = 0;
+            var length = lst.Count();
+            foreach (var el in lst)
+            {
+                i++;
+                if (i > length - arg)
+                {
+                    yield break;
+                }
+                yield return el;
+            }
+        }
+        public static IEnumerable<T> MyTake<T>(this IEnumerable<T> lst, int num)
+        {
+            var counter = 0;
+            foreach (var el in lst)
+            {
+                counter++;
+                if (counter <= num)
+                {
+                    yield return el;
+                }
+                else
+                {
+                    yield break;
+                }
+            }
+        }
+        public static IEnumerable<T> MyTakeLast<T>(this IEnumerable<T> lst, int num)
+        {
+            var count = 0;
+            var stack1 = new Stack<T>(lst);
+            var stack2 = new Stack<T>();
+
+            foreach (var el in stack1)
+            {
+                count++;
+                if (count > num) break;
+                stack2.Push(el);
+            }
+
+            foreach (var el in stack2)
+                yield return el;
+        }
+        public static IEnumerable<TRes> MyJoin<TOut, TIn, TKey, TRes>(this IEnumerable<TOut> outer,
+           IEnumerable<TIn> inner, Func<TOut, TKey> makeKeyOut, Func<TIn, TKey> makeKeyIn, Func<TOut, TIn, TRes> makeRes)
+        {
+            var outKeyValueList = new List<(TKey keyOut, TOut valueOut)>();
+            var inKeyValueList = new List<(TKey keyIn, TIn valueIn)>();
+
+            foreach (var el in outer)
+            {
+                outKeyValueList.Add((makeKeyOut(el), el));
+            }
+            foreach (var el in inner)
+            {
+                inKeyValueList.Add((makeKeyIn(el), el));
+            }
+
+            foreach (var el1 in outKeyValueList)
+            {
+                foreach (var el2 in inKeyValueList)
+                {
+                    if (el1.keyOut.Equals(el2.keyIn))
+                    {
+                        yield return makeRes(el1.valueOut, el2.valueIn);
+                    }
+                }
+            }
+        }
+        public static IEnumerable<TResult> MyZip<TFirst, TSecond, TResult>(
+        this IEnumerable<TFirst> firstLst, IEnumerable<TSecond> secondLst, Func<TFirst, TSecond, TResult> makeRes)
+        {
+            var firstEnumerator = firstLst.GetEnumerator();
+            var secondEnumerator = secondLst.GetEnumerator();
+
+            while (firstEnumerator.MoveNext() && secondEnumerator.MoveNext())
+            {
+                yield return makeRes(firstEnumerator.Current, secondEnumerator.Current);
+            }
+        }
+        public class MyGrouping<TKey, TElement> : IGrouping<TKey, TElement>
+        {
+            private readonly TKey key;
+            private readonly IEnumerable<TElement> values;
+
+            public MyGrouping(TKey key, IEnumerable<TElement> values)
+            {
+                if (values == null)
+                {
+                    throw new ArgumentNullException("List of elements cannot be null");
+                }
+                this.key = key;
+                this.values = values;
+                Key = key;
+            }
+
+            public TKey Key { get; }
+
+            public IEnumerator<TElement> GetEnumerator()
+            {
+                return values.GetEnumerator();
+            }
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+        }
+        public static IEnumerable<IGrouping<TKey, TList>> MyGroupBy<TKey, TList>
+            (this IEnumerable<TList> source, Func<TList, TKey> keyMaker)
+        {
+            var keys = new List<TKey>();
+
+            foreach (var el in source)
+            {
+                keys.Add(keyMaker(el));
+            }
+            foreach (var key in keys.Distinct())
+            {
+                var listValue = new List<TList>();
+                foreach (var el in source)
+                {
+                    if (key.Equals(keyMaker(el)))
+                        listValue.Add(el);
+                }
+                yield return new MyGrouping<TKey, TList>(key, listValue);
             }
         }
     }
