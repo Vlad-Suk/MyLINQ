@@ -8,7 +8,7 @@ namespace MyLINQ
 {
     public static class MyLinqExtensions
     {
-        public static void CheckRange<T>(IEnumerable<T> lst)
+        public static void ThrowIfEmpty<T>(IEnumerable<T> lst)
         {
             if (lst.Count() == 0)
                 throw new InvalidOperationException("Sequence contains no elements");
@@ -42,7 +42,7 @@ namespace MyLINQ
         }
         public static int MyMax(this IEnumerable<int> lst)
         {
-            CheckRange(lst);
+            ThrowIfEmpty(lst);
             var max = lst.First();
             foreach (var el in lst)
             {
@@ -53,7 +53,7 @@ namespace MyLINQ
         }
         public static int MyMin(this IEnumerable<int> lst)
         {
-            CheckRange(lst);
+            ThrowIfEmpty(lst);
             var min = lst.First();
             foreach (var el in lst)
             {
@@ -82,7 +82,7 @@ namespace MyLINQ
         }
         public static T MyAggregate<T>(this IEnumerable<T> lst, Func<T, T, T> func)
         {
-            CheckRange(lst);
+            ThrowIfEmpty(lst);
             T result = default;
             foreach (var el in lst)
             {
@@ -92,7 +92,7 @@ namespace MyLINQ
         }
         public static double MyAverage(this IEnumerable<int> lst)
         {
-            CheckRange(lst);
+            ThrowIfEmpty(lst);
             double sum = 0;
             foreach (var el in lst)
             {
@@ -118,6 +118,22 @@ namespace MyLINQ
                     return el;
             }
             throw new InvalidOperationException("Sequence contains no matching element");
+        }
+        public static T MyLast<T>(this IEnumerable<T> lst, Func<T, bool> predicate)
+        {
+            foreach (var el in lst.Reverse())
+            {
+                if (predicate(el))
+                    return el;
+            }
+            throw new InvalidOperationException("Sequence contains no matching element");
+        }
+        public static IEnumerable<Tout> MySelect<Tin, Tout>(this IEnumerable<Tin> lst, Func<Tin, Tout> lambda)
+        {
+            foreach (var el in lst)
+            {
+                yield return lambda(el);
+            }
         }
     }
 }
