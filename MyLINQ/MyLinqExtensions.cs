@@ -1,4 +1,4 @@
-﻿//The main porpuse of this project is work with logic of methods.
+﻿//The main purpose of this project is work with logic of methods.
 //For this reason I didn't do all overloads.
 using System;
 using System.Linq;
@@ -99,6 +99,25 @@ namespace MyLINQ
                 sum += el;
             }
             return sum / lst.Count();
+        }
+        public static IEnumerable<T> MyDistinct<T>(this IEnumerable<T> lst)
+        {
+            var result = new List<T>();
+            foreach (var el in lst)
+            {
+                if (!result.Contains(el))
+                    result.Add(el);
+            }
+            return result;
+        }
+        public static T MyFirst<T>(this IEnumerable<T> lst, Func<T, bool> predicate)
+        {
+            foreach (var el in lst)
+            {
+                if (predicate(el))
+                    return el;
+            }
+            throw new InvalidOperationException("Sequence contains no matching element");
         }
     }
 }
