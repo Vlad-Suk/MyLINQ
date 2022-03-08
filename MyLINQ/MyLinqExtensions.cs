@@ -7,7 +7,7 @@ using System.Collections;
 
 namespace MyLINQ
 {
-    public static class MyLinqExtensions
+    public static partial class MyLinqExtensions
     {
         public static void ThrowIfEmpty<T>(IEnumerable<T> lst)
         {
@@ -242,34 +242,6 @@ namespace MyLINQ
                 yield return makeRes(firstEnumerator.Current, secondEnumerator.Current);
             }
         }
-        public class MyGrouping<TKey, TElement> : IGrouping<TKey, TElement>
-        {
-            private readonly TKey key;
-            private readonly IEnumerable<TElement> values;
-
-            public MyGrouping(TKey key, IEnumerable<TElement> values)
-            {
-                if (values == null)
-                {
-                    throw new ArgumentNullException("List of elements cannot be null");
-                }
-                this.key = key;
-                this.values = values;
-                Key = key;
-            }
-
-            public TKey Key { get; }
-
-            public IEnumerator<TElement> GetEnumerator()
-            {
-                return values.GetEnumerator();
-            }
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
-
-        }
         public static IEnumerable<IGrouping<TKey, TList>> MyGroupBy<TKey, TList>
             (this IEnumerable<TList> source, Func<TList, TKey> keyMaker)
         {
@@ -290,5 +262,57 @@ namespace MyLINQ
                 yield return new MyGrouping<TKey, TList>(key, listValue);
             }
         }
+
+        public static IOrderedEnumerable<TElement> MyOrderBy<TElement, TKey>(
+            this IEnumerable<TElement> lst, Func<TElement, TKey> ketSelector)
+            where TKey : IComparable<TKey>
+        {
+            Func<TElement, TElement, int> compare = (el1, el2) =>
+            {
+                return ketSelector(el1).CompareTo(ketSelector(el2));
+            };
+
+            return new MyOrder<TElement>(QuickSort(lst, compare));
+        }
+
+        public static IOrderedEnumerable<TElement> MyOrderBy<TElement>(
+            this IEnumerable<TElement> lst,
+            IComparer<TElement> comparer, bool descending = false)
+        {
+            Func<TElement, TElement, int> compare = (el1, el2) =>
+            {
+                if (!descending)
+                {
+                    return comparer.Compare(el1, el2);
+                }
+                else
+                {
+                    return comparer.Compare(el2, el1);
+                }
+            };
+
+            return new MyOrder<TElement>(QuickSort(lst, compare));
+        }
+
+        public static IOrderedEnumerable<TElement> MyOrderBy<TElement, TKey>(
+            this IEnumerable<TElement> lst, Func<TElement, TKey> keySelector,
+            IComparer<TKey> comparer, bool descending = false)
+        {
+            Func<TElement, TElement, int> compare = (el1, el2) =>
+            {
+                if (!descending)
+                {
+                    return comparer.Compare(keySelector(el1), keySelector(el2));
+                }
+                else
+                {
+                    return comparer.Compare(keySelector(el2), keySelector(el1));
+                }
+            };
+
+            return new MyOrder<TElement>(QuickSort(lst, compare));
+        }
+
+
     }
 }
