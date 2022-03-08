@@ -313,6 +313,28 @@ namespace MyLINQ
             return new MyOrder<TElement>(QuickSort(lst, compare));
         }
 
+        public static bool MyContains<T>(this IEnumerable<T> lst, T val)
+        {
+            foreach (var el in lst)
+            {
+                if (el.Equals(val)) return true;
+            }
+            return false;
+        }
+        public static T MyElementAt<T>(this IEnumerable<T> lst, int index)
+        {
+            if (index < 0 || index >= lst.Count())
+                throw new ArgumentOutOfRangeException("Index was out of range. Must be non-negative and less than the size of the collection.");
+            var current = 0;
+            foreach (var el in lst)
+            {
+                if (current == index)
+                    return el;
+                current++;
+            }
+            return default;
+        }
+
 
     }
 }
