@@ -334,7 +334,41 @@ namespace MyLINQ
             }
             return default;
         }
+        public static IEnumerable<T> MyUnion<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
+        {
+            var result = lst1.Concat(lst2);
+            return result.Distinct().ToList();
+        }
+        public static IEnumerable<T> MyIntersection<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
+        {
+            var result = new List<T>();
+            foreach (var el1 in lst1)
+            {
+                foreach (var el2 in lst2)
+                {
+                    if (el1.Equals(el2) && (!result.Contains(el1)))
+                        result.Add(el1);
+                }
+            }
+            return result;
+        }
+        public static IEnumerable<T> MyExcept<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
+        {
+            var distinct = lst1.Distinct();
+            var result = distinct.ToList();
+            lst1 = distinct.ToList();
 
-
+            foreach (var el1 in lst1)
+            {
+                foreach (var el2 in lst2)
+                {
+                    if (el1.Equals(el2))
+                    {
+                        result.Remove(el1);
+                    }
+                }
+            }
+            return result;
+        }
     }
 }

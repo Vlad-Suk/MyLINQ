@@ -9,6 +9,7 @@ namespace MyLINQ
 {
     public static partial class MyLinqExtensions
     {
+        #region GroupBy
         private class MyGrouping<TKey, TElement> : IGrouping<TKey, TElement>
         {
             private readonly TKey key;
@@ -37,6 +38,9 @@ namespace MyLINQ
             }
 
         }
+        #endregion
+
+        #region OrderBy
         private static IEnumerable<T> QuickSort<T>(IEnumerable<T> lst, Func<T, T, int> compare)
         {
             if (lst.Count() < 2) return lst;
@@ -71,5 +75,6 @@ namespace MyLINQ
                 return GetEnumerator();
             }
         }
+        #endregion
     }
 }
