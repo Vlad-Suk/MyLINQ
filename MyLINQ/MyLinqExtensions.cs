@@ -370,5 +370,21 @@ namespace MyLINQ
             }
             return result;
         }
+        public static IEnumerable<TRes> MyCast<TRes>(this IEnumerable source)
+        {
+            foreach (var el in source)
+            {
+                yield return (TRes)el;
+            }
+        }
+        public static IEnumerable<TRes> MyOfType<TRes>(this IEnumerable source)
+        {
+            foreach (object el in source)
+            {
+                if (el is TRes result)
+                    yield return result;
+            }
+        }
+        public static IEnumerable<T> MyAsEnumerable<T>(this IEnumerable<T> source) => source;
     }
 }
