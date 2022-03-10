@@ -76,5 +76,10 @@ namespace MyLINQ
             }
         }
         #endregion
+        public static void ThrowIfEmpty<T>(IEnumerable<T> lst)
+        {
+            if (lst.Count() == 0)
+                throw new InvalidOperationException("Sequence contains no elements");
+        }
     }
 }

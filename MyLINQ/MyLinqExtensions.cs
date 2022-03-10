@@ -9,11 +9,6 @@ namespace MyLINQ
 {
     public static partial class MyLinqExtensions
     {
-        public static void ThrowIfEmpty<T>(IEnumerable<T> lst)
-        {
-            if (lst.Count() == 0)
-                throw new InvalidOperationException("Sequence contains no elements");
-        }
         public static IEnumerable<T> MyPrepend<T>(this IEnumerable<T> lst, T arg)
         {
             yield return arg;
