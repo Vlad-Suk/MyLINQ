@@ -386,5 +386,18 @@ namespace MyLINQ
             }
         }
         public static IEnumerable<T> MyAsEnumerable<T>(this IEnumerable<T> source) => source;
+        public static bool MySequenceEqual<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
+        {
+            if (lst1.Count() != lst2.Count())
+                return false;
+            var em1 = lst1.GetEnumerator();
+            var em2 = lst2.GetEnumerator();
+            while (em1.MoveNext() && em2.MoveNext())
+            {
+                if (!em1.Current.Equals(em2.Current))
+                    return false;
+            }
+            return true;
+        }
     }
 }
