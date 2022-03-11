@@ -157,7 +157,7 @@ namespace MyLINQ.Tests
             }
         }
         [Test]
-        public void MyAggregate()
+        public void MyAggregateTest()
         {
             var intList = new List<int> { 1, 5, 8 };
             var strList = new List<string> { "I'm", " a programmer." };
@@ -169,6 +169,22 @@ namespace MyLINQ.Tests
             // throw on empty list
             Assert.Throws<InvalidOperationException>(() => new List<int>().MyAggregate((el1, el2) => el1 + el2));
         }
+        [Test]
+        public void MyAverageTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                new List<int> { 1, 8, 3 },
+                new List<int> { -9, 8, -4},
+                new List<int> { 1 }
+            };
+            foreach (var lst in inputList)
+            {
+                Assert.AreEqual(lst.MyAverage(), lst.Average());
+            }
 
+            // throw on empty list
+            Assert.Throws<InvalidOperationException>(() => new List<int>().MyAverage());
+        }
     }
 }
