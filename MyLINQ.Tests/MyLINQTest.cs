@@ -60,7 +60,7 @@ namespace MyLINQ.Tests
         [Test]
         public void MyConcatTest()
         {
-            var inputListConcatArgsCollection = new List<(IEnumerable<int>, IEnumerable<int>)>
+            var inputListConcatListCollection = new List<(IEnumerable<int>, IEnumerable<int>)>
             {
                 // adding to empty list
                 (new List<int> { }, new List<int> { 3 }),
@@ -71,7 +71,7 @@ namespace MyLINQ.Tests
                 (new List<int> { 1, 2, 3 }, new List<int> { 1, 2, 3 }),
             };
 
-            foreach (var (firstList, secondList) in inputListConcatArgsCollection)
+            foreach (var (firstList, secondList) in inputListConcatListCollection)
             {
                 var actual = firstList.AsEnumerable();
                 actual = actual.MyConcat(secondList);
@@ -85,7 +85,7 @@ namespace MyLINQ.Tests
         [Test]
         public void MyMaxTest()
         {
-            var inputListMax = new List<IEnumerable<int>>
+            var inputList = new List<IEnumerable<int>>
             {
                 (new List<int> { 1 }),
                 (new List<int> { 1 , 8, 6 , -1 }),
@@ -93,9 +93,9 @@ namespace MyLINQ.Tests
                 (new List<int> { Int32.MaxValue, Int32.MinValue }),
             };
 
-            foreach (var inputList in inputListMax)
+            foreach (var inputLst in inputList)
             {
-                Assert.AreEqual(inputList.Max(), inputList.MyMax());
+                Assert.AreEqual(inputLst.Max(), inputLst.MyMax());
             }
 
             // throw on empty list
@@ -104,7 +104,7 @@ namespace MyLINQ.Tests
         [Test]
         public void MyMinTest()
         {
-            var inputListMax = new List<IEnumerable<int>>
+            var inputList = new List<IEnumerable<int>>
             {
                 (new List<int> { 1 }),
                 (new List<int> { 1 , 8, 6 , -1 }),
@@ -112,9 +112,9 @@ namespace MyLINQ.Tests
                 (new List<int> { Int32.MaxValue, Int32.MinValue }),
             };
 
-            foreach (var inputList in inputListMax)
+            foreach (var inputLst in inputList)
             {
-                Assert.AreEqual(inputList.Min(), inputList.MyMin());
+                Assert.AreEqual(inputLst.Min(), inputLst.MyMin());
             }
 
             // throw on empty list
@@ -126,14 +126,49 @@ namespace MyLINQ.Tests
             var inputList = new List<IEnumerable<int>>
             {
                 (new List<int> { }),
-                (new List<int> { 2, 3, 8}),
+                (new List<int> { 2, 3, 8 }),
+                (new List<int> { -1, -5 }),
             };
 
             foreach (var list in inputList)
             {
                 Assert.That(list.All(el => el > 0), Is.EqualTo(list.MyAll(el => el > 0)));
+                Assert.That(list.All(el => el < 0), Is.EqualTo(list.MyAll(el => el < 0)));
                 Assert.That(list.All(el => el > 2), Is.EqualTo(list.MyAll(el => el > 2)));
             }
         }
+        [Test]
+        public void MyAnyTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                (new List<int> { }),
+                (new List<int> { 2, 3, 8 }),
+                (new List<int> { 3, 3, 8 }),
+                (new List<int> { -1, 5 }),
+                (new List<int> { -1, -5 }),
+            };
+
+            foreach (var list in inputList)
+            {
+                Assert.That(list.Any(el => el > 0), Is.EqualTo(list.MyAny(el => el > 0)));
+                Assert.That(list.Any(el => el < 0), Is.EqualTo(list.MyAny(el => el < 0)));
+                Assert.That(list.Any(el => el > 2), Is.EqualTo(list.MyAny(el => el > 2)));
+            }
+        }
+        [Test]
+        public void MyAggregate()
+        {
+            var intList = new List<int> { 1, 5, 8 };
+            var strList = new List<string> { "I'm", " a programmer." };
+
+            Assert.AreEqual(intList.MyAggregate((accumulate, source) => accumulate / source), intList.Aggregate((accumulate, source) => accumulate / source));
+            Assert.AreEqual(intList.MyAggregate((accumulate, source) => accumulate + source), intList.Aggregate((accumulate, source) => accumulate + source));
+            Assert.AreEqual(strList.MyAggregate((accumulate, source) => accumulate + source), strList.Aggregate((accumulate, source) => accumulate + source));
+
+            // throw on empty list
+            Assert.Throws<InvalidOperationException>(() => new List<int>().MyAggregate((el1, el2) => el1 + el2));
+        }
+
     }
 }
