@@ -131,7 +131,7 @@ namespace MyLINQ
                 yield return lambda(el);
             }
         }
-        public static IEnumerable<Tout> MyManySelect<Tin, Tout>(this IEnumerable<Tin> lst,
+        public static IEnumerable<Tout> MySelectMany<Tin, Tout>(this IEnumerable<Tin> lst,
             Func<Tin, IEnumerable<Tout>> inElToTempOutLst)
         {
             foreach (var el in lst)

@@ -225,5 +225,70 @@ namespace MyLINQ.Tests
                 Assert.Throws<InvalidOperationException>(() => lst.MyFirst(el => el < -10));
             }
         }
+        [Test]
+        public void MyLastTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                new List<int> { 1, 5, 8, 4, -9},
+                new List<int> { -1, -7, -9 , 8},
+                new List<int> { },
+            };
+
+            foreach (var lst in inputList)
+            {
+                if (lst.Count() == 0)
+                    continue;
+                Assert.AreEqual(lst.MyLast(el => el > 2), lst.Last(el => el > 2));
+                Assert.AreEqual(lst.MyLast(el => el < -2), lst.Last(el => el < -2));
+            }
+
+            foreach (var lst in inputList)
+            {
+                Assert.Throws<InvalidOperationException>(() => lst.MyLast(el => el > 10));
+                Assert.Throws<InvalidOperationException>(() => lst.MyLast(el => el < -10));
+            }
+        }
+        [Test]
+        public void MySelectTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                new List<int> { },
+                new List<int> { 1, 8, 2 },
+                new List<int> { 1, 1, 4, 4, -4, -4 },
+            };
+
+            foreach (var lst in inputList)
+            {
+                Assert.That(lst.Select(el => el), Is.EqualTo(lst.MySelect(el => el)));
+                Assert.That(lst.Select(el => el + 5), Is.EqualTo(lst.MySelect(el => el + 5)));
+            }
+        }
+        [Test]
+        public void MySelectManyTest()
+        {
+            var inputManyLists = new List<IEnumerable<IEnumerable<int>>>
+            {
+                new List<IEnumerable<int>>
+                { 
+                    new List<int> { },
+                    new List<int> { 1, 8, 92},
+                    new List<int> { 7, 9 }
+                },
+                new List<IEnumerable<int>>
+                {
+                    new List<int>()
+                },
+                new List<IEnumerable<int>>
+                {
+                    new List<int> { 1, 2, 3 }
+                }
+            };
+            foreach (var manyList in inputManyLists)
+            {
+                Assert.That(manyList.SelectMany(el => el), Is.EqualTo(manyList.MySelectMany(el => el)));
+            }
+        }
     }
 }
