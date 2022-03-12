@@ -186,5 +186,44 @@ namespace MyLINQ.Tests
             // throw on empty list
             Assert.Throws<InvalidOperationException>(() => new List<int>().MyAverage());
         }
+        [Test]
+        public void MyDistinctTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                new List<int> { },
+                new List<int> { 1, 8, 2 },
+                new List<int> { 1, 1, 4, 4, -4, -4 },
+            };
+
+            foreach (var lst in inputList)
+            {
+                Assert.That(lst.Distinct(), Is.EqualTo(lst.MyDistinct()));
+            }
+        }
+        [Test]
+        public void MyFirstTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                new List<int> { 1, 5, 8, 4, -9},
+                new List<int> { -1, -7, -9 , 8},
+                new List<int> { },
+            };
+
+            foreach (var lst in inputList)
+            {
+                if (lst.Count() == 0)
+                    continue;
+                Assert.AreEqual(lst.MyFirst(el => el > 2), lst.First(el => el > 2));
+                Assert.AreEqual(lst.MyFirst(el => el < -2), lst.First(el => el < -2));
+            }
+
+            foreach (var lst in inputList)
+            {
+                Assert.Throws<InvalidOperationException>(() => lst.MyFirst(el => el > 10));
+                Assert.Throws<InvalidOperationException>(() => lst.MyFirst(el => el < -10));
+            }
+        }
     }
 }
