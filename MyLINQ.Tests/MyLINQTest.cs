@@ -290,5 +290,69 @@ namespace MyLINQ.Tests
                 Assert.That(manyList.SelectMany(el => el), Is.EqualTo(manyList.MySelectMany(el => el)));
             }
         }
+        [Test]
+        public void MySkipTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                new List<int> { },
+                new List<int> { 1, 8, 2 },
+                new List<int> { 1, 1, 4, 4, -4, -4 },
+            };
+
+            foreach (var lst in inputList)
+            {
+                Assert.That(lst.Skip(2), Is.EqualTo(lst.MySkip(2)));
+                Assert.That(lst.Skip(4), Is.EqualTo(lst.MySkip(4)));
+            }    
+        }
+        [Test]
+        public void MySkipLastTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                new List<int> { },
+                new List<int> { 1, 8, 2 },
+                new List<int> { 1, 1, 4, 4, -4, -4 },
+            };
+
+            foreach (var lst in inputList)
+            {
+                Assert.That(lst.SkipLast(2), Is.EqualTo(lst.MySkipLast(2)));
+                Assert.That(lst.SkipLast(4), Is.EqualTo(lst.MySkipLast(4)));
+            }
+        }
+        [Test]
+        public void MyTakeTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                new List<int> { },
+                new List<int> { 1, 8, 2 },
+                new List<int> { 1, 1, 4, 4, -4, -4 },
+            };
+
+            foreach (var lst in inputList)
+            {
+                Assert.That(lst.Take(2), Is.EqualTo(lst.MyTake(2)));
+                Assert.That(lst.Take(4), Is.EqualTo(lst.MyTake(4)));
+            }
+        }
+        [Test]
+        public void MyTakeLastTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                new List<int> { },
+                new List<int> { 1, 8, 2 },
+                new List<int> { 1, 1, 4, 4, -4, -4 },
+            };
+
+            foreach (var lst in inputList)
+            {
+                Assert.That(lst.TakeLast(2), Is.EqualTo(lst.MyTakeLast(2)));
+                Assert.That(lst.TakeLast(4), Is.EqualTo(lst.MyTakeLast(4)));
+            }
+        }
     }
 }
