@@ -31,7 +31,7 @@ namespace MyLINQ.Tests
 
 
                 Assert.That(actual, Is.EquivalentTo(expected));
-            }    
+            }
         }
         [Test]
         public void MyAppendTest()
@@ -271,7 +271,7 @@ namespace MyLINQ.Tests
             var inputManyLists = new List<IEnumerable<IEnumerable<int>>>
             {
                 new List<IEnumerable<int>>
-                { 
+                {
                     new List<int> { },
                     new List<int> { 1, 8, 92},
                     new List<int> { 7, 9 }
@@ -304,7 +304,7 @@ namespace MyLINQ.Tests
             {
                 Assert.That(lst.Skip(2), Is.EqualTo(lst.MySkip(2)));
                 Assert.That(lst.Skip(4), Is.EqualTo(lst.MySkip(4)));
-            }    
+            }
         }
         [Test]
         public void MySkipLastTest()
@@ -353,6 +353,55 @@ namespace MyLINQ.Tests
                 Assert.That(lst.TakeLast(2), Is.EqualTo(lst.MyTakeLast(2)));
                 Assert.That(lst.TakeLast(4), Is.EqualTo(lst.MyTakeLast(4)));
             }
+        }
+        [Test]
+        public void MyJoinTest()
+        {
+            var inputTwoLists = new List<(IEnumerable<int>, IEnumerable<int>)>
+            {
+                (new List<int> { 1, 2, 3 }, new List<int> { 1, 20, 30}),
+                (new List<int> { },         new List<int> { 2, 4 }),
+                (new List<int> { 4, 5 },    new List<int> { })
+            };
+
+            foreach (var (outList, inList) in inputTwoLists)
+            {
+                Assert.That(outList.Join(inList, outKey => outKey, inKey => inKey, (outRes, inRes) => outRes),
+                    Is.EqualTo(outList.MyJoin(inList, outKey => outKey, inKey => inKey, (outRes, inRes) => outRes)));
+                Assert.That(outList.Join(inList, outKey => outKey, inKey => inKey, (outRes, inRes) => outRes + inRes),
+                    Is.EqualTo(outList.MyJoin(inList, outKey => outKey, inKey => inKey, (outRes, inRes) => outRes + inRes)));
+            }
+        }
+        [Test]
+        public void MyZipTest()
+        {
+            var inputTwoLists = new List<(IEnumerable<int>, IEnumerable<int>)>
+            {
+                (new List<int> { 1, 2, 3 }, new List<int> { 1, 20, 30}),
+                (new List<int> { },         new List<int> { 2, 4 }),
+                (new List<int> { 4, 5 },    new List<int> { })
+            };
+
+            foreach (var (firstList, secondList) in inputTwoLists)
+            {
+                Assert.That(firstList.Zip(secondList, (first, second) => (first, second)),
+                    Is.EqualTo(firstList.MyZip(secondList, (first, second) => (first, second))));
+                Assert.That(firstList.Zip(secondList, (first, second) => first + second),
+                    Is.EqualTo(firstList.MyZip(secondList, (first, second) => first + second)));
+            }
+        }
+        [Test]
+        public void MyGroupByTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                new List<int> { 1, 3, 5 },
+                new List<int> { 1 , 4, 7, 8, },
+                new List<int> { }
+            };
+            Assert.That(inputList.GroupBy(el => el), Is.EqualTo(inputList.MyGroupBy(el => el)));
+            foreach (var lst in inputList)
+                Assert.That(lst.GroupBy(el => el), Is.EqualTo(lst.MyGroupBy(el => el)));
         }
     }
 }
