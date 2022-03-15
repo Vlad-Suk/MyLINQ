@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace MyLINQ.Tests
 {
@@ -506,6 +507,76 @@ namespace MyLINQ.Tests
             {
                 Assert.That(secondLst.Except(firstLst), Is.EqualTo(secondLst.MyExcept(firstLst)));
                 Assert.That(secondLst.Except(firstLst), Is.EqualTo(secondLst.MyExcept(firstLst)));
+            }
+        }
+        [Test]
+        public void MyCastTest()
+        {
+            var listArrayListsTheSameTypes = new List<ArrayList>
+            {
+                new ArrayList {},
+                new ArrayList { 1, 3, 8 }
+            };
+
+            foreach (var arrLst in listArrayListsTheSameTypes)
+            {
+                Assert.That(arrLst.Cast<int>(), Is.EqualTo(arrLst.MyCast<int>()));
+            }
+
+            var arrLst1 = new ArrayList { 1, " v " };
+
+            try
+            {
+                var result = arrLst1.Cast<int>();
+            }
+            catch (InvalidCastException ex)
+            {
+                Assert.Fail(ex.Message);
+            }
+        }
+        [Test]
+        public void MyOfTypeTest()
+        {
+            var listArrayListsTheDifferentTypes = new List<ArrayList>
+            {
+                new ArrayList {},
+                new ArrayList { 1, 3, 8 },
+                new ArrayList { 1, 3, " " }
+            };
+
+            foreach (var arrList in listArrayListsTheDifferentTypes)
+            {
+                Assert.That(arrList.OfType<int>(), Is.EqualTo(arrList.MyOfType<int>()));
+            }
+        }
+        [Test]
+        public void MyAsEnumerableTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                new List<int> { 1 , 4, 7, 8, -2, 1},
+                new List<int> { }
+            };
+
+            foreach (var lst in inputList)
+            {
+                Assert.That(lst.AsEnumerable(), Is.EqualTo(lst.MyAsEnumerable()));
+            }
+        }
+        [Test]
+        public void MySequenceEqual()
+        {
+            var inputTwoLists = new List<(IEnumerable<int>, IEnumerable<int>)>
+            {
+                (new List<int> { 1, 2, 3 }, new List<int> { 1, 20, 30}),
+                (new List<int> { },         new List<int> { 2, 4 }),
+                (new List<int> { 4, 5 },    new List<int> { 4, 5 }),
+                (new List<int> { 5, 4 },    new List<int> { 4, 5 })
+            };
+
+            foreach (var (firstLst, secondLst) in inputTwoLists)
+            {
+                Assert.AreEqual(firstLst.MySequenceEqual(secondLst), firstLst.SequenceEqual(secondLst));
             }
         }
     }
