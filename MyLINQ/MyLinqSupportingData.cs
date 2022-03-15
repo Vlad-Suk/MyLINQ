@@ -75,11 +75,32 @@ namespace MyLINQ
                 return GetEnumerator();
             }
         }
+
+        // Alternative MyOrderBy version
+        public static IOrderedEnumerable<TElement> MyOrderBy<TElement>(
+            this IEnumerable<TElement> lst,
+            IComparer<TElement> comparer, bool descending = false)
+        {
+            Func<TElement, TElement, int> compare = (el1, el2) =>
+            {
+                if (!descending)
+                {
+                    return comparer.Compare(el1, el2);
+                }
+                else
+                {
+                    return comparer.Compare(el2, el1);
+                }
+            };
+
+            return new MyOrder<TElement>(QuickSort(lst, compare));
+        }
         #endregion
         public static void ThrowIfEmpty<T>(IEnumerable<T> lst)
         {
             if (lst.Count() == 0)
                 throw new InvalidOperationException("Sequence contains no elements");
         }
+
     }
 }

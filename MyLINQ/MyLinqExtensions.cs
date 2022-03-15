@@ -270,25 +270,6 @@ namespace MyLINQ
             return new MyOrder<TElement>(QuickSort(lst, compare));
         }
 
-        public static IOrderedEnumerable<TElement> MyOrderBy<TElement>(
-            this IEnumerable<TElement> lst,
-            IComparer<TElement> comparer, bool descending = false)
-        {
-            Func<TElement, TElement, int> compare = (el1, el2) =>
-            {
-                if (!descending)
-                {
-                    return comparer.Compare(el1, el2);
-                }
-                else
-                {
-                    return comparer.Compare(el2, el1);
-                }
-            };
-
-            return new MyOrder<TElement>(QuickSort(lst, compare));
-        }
-
         public static IOrderedEnumerable<TElement> MyOrderBy<TElement, TKey>(
             this IEnumerable<TElement> lst, Func<TElement, TKey> keySelector,
             IComparer<TKey> comparer, bool descending = false)

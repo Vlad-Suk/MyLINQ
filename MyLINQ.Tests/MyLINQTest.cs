@@ -403,5 +403,38 @@ namespace MyLINQ.Tests
             foreach (var lst in inputList)
                 Assert.That(lst.GroupBy(el => el), Is.EqualTo(lst.MyGroupBy(el => el)));
         }
+        [Test]
+        public void MyOrderByWithLambdaTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                new List<int> { 1, 3, 5 },
+                new List<int> { 1 , 4, 7, 8, -2, 1},
+                new List<int> { -2, -1, -9, -2 },
+                new List<int> { }
+            };
+
+            foreach (var lst in inputList)
+            {
+                Assert.That(lst.OrderBy(el => el), Is.EqualTo(lst.MyOrderBy(el => el)));
+            }
+        }
+        [Test]
+        public void MyOrderBytWithLambdaAndICompareTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                new List<int> { 1, 3, 5 },
+                new List<int> { 1 , 4, 7, 8, -2, 1},
+                new List<int> { -2, -1, -9, -2 },
+                new List<int> { }
+            };
+
+            foreach (var lst in inputList)
+            {
+                Assert.That(lst.OrderBy(el => el, Comparer<int>.Default), Is.EqualTo(lst.MyOrderBy(el => el, Comparer<int>.Default)));
+            }
+        }
+
     }
 }
