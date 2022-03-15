@@ -435,6 +435,78 @@ namespace MyLINQ.Tests
                 Assert.That(lst.OrderBy(el => el, Comparer<int>.Default), Is.EqualTo(lst.MyOrderBy(el => el, Comparer<int>.Default)));
             }
         }
+        [Test]
+        public void MyContainsTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                new List<int> { 1 , 4, 7, 8, -2, 1},
+                new List<int> { }
+            };
 
+            foreach (var lst in inputList)
+            {
+                Assert.AreEqual(lst.MyContains(1), lst.Contains(1));
+                Assert.AreEqual(lst.MyContains(0), lst.Contains(0));
+            }
+        }
+        [Test]
+        public void MyElementAtTest()
+        {
+            var emptyLst = new List<int>();
+            var noEmptyLst = new List<int> { 1, 4, 9, 5 };
+
+            Assert.AreEqual(noEmptyLst.MyElementAt(3), noEmptyLst.ElementAt(3));
+            Assert.AreEqual(noEmptyLst.MyElementAt(0), noEmptyLst.ElementAt(0));
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => noEmptyLst.MyElementAt(-1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => noEmptyLst.MyElementAt(5));
+        }
+        [Test]
+        public void MyUnionTest()
+        {
+            var inputTwoLists = new List<(IEnumerable<int>, IEnumerable<int>)>
+            {
+                (new List<int> { 1, 2, 3 }, new List<int> { 1, 20, 30}),
+                (new List<int> { },         new List<int> { 2, 4 }),
+                (new List<int> { 4, 5 },    new List<int> { 4, -2 })
+            };
+
+            foreach (var (firstLst, secondLst) in inputTwoLists)
+            {
+                Assert.That(firstLst.Union(secondLst), Is.EqualTo(firstLst.MyUnion(secondLst)));
+            }
+        }
+        [Test]
+        public void MyIntersectTest()
+        {
+            var inputTwoLists = new List<(IEnumerable<int>, IEnumerable<int>)>
+            {
+                (new List<int> { 1, 2, 3 }, new List<int> { 1, 20, 30}),
+                (new List<int> { },         new List<int> { 2, 4 }),
+                (new List<int> { 4, 5 },    new List<int> { 4, -2 })
+            };
+
+            foreach (var (firstLst, secondLst) in inputTwoLists)
+            {
+                Assert.That(firstLst.Intersect(secondLst), Is.EqualTo(firstLst.MyIntersect(secondLst)));
+            }
+        }
+        [Test]
+        public void MyExceptTest()
+        {
+            var inputTwoLists = new List<(IEnumerable<int>, IEnumerable<int>)>
+            {
+                (new List<int> { 1, 2, 3 }, new List<int> { 1, 20, 30}),
+                (new List<int> { },         new List<int> { 2, 4 }),
+                (new List<int> { 4, 5 },    new List<int> { 4, -2 })
+            };
+
+            foreach (var (firstLst, secondLst) in inputTwoLists)
+            {
+                Assert.That(secondLst.Except(firstLst), Is.EqualTo(secondLst.MyExcept(firstLst)));
+                Assert.That(secondLst.Except(firstLst), Is.EqualTo(secondLst.MyExcept(firstLst)));
+            }
+        }
     }
 }

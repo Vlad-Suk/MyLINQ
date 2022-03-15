@@ -315,7 +315,7 @@ namespace MyLINQ
             var result = lst1.Concat(lst2);
             return result.Distinct().ToList();
         }
-        public static IEnumerable<T> MyIntersection<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
+        public static IEnumerable<T> MyIntersect<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
         {
             var result = new List<T>();
             foreach (var el1 in lst1)
