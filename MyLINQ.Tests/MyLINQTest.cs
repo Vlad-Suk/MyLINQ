@@ -579,5 +579,19 @@ namespace MyLINQ.Tests
                 Assert.AreEqual(firstLst.MySequenceEqual(secondLst), firstLst.SequenceEqual(secondLst));
             }
         }
+        [Test]
+        public void MyReverseTest()
+        {
+            var inputList = new List<IEnumerable<int>>
+            {
+                new List<int> { 1 , 4, 7, 8, -2, 1},
+                new List<int> { }
+            };
+
+            foreach (var lst in inputList)
+            {
+                Assert.That(lst.Reverse(), Is.EqualTo(lst.MyReverse()));
+            }
+        }
     }
 }

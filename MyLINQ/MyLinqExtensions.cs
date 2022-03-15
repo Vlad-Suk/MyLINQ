@@ -375,5 +375,11 @@ namespace MyLINQ
             }
             return true;
         }
+        public static IEnumerable<T> MyReverse<T>(this IEnumerable<T> lst)
+        {
+            var stackLst = new Stack<T>(lst);
+            foreach (var el in stackLst)
+                yield return el;
+        }
     }
 }
