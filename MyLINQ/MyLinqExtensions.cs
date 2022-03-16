@@ -9,6 +9,14 @@ namespace MyLINQ
 {
     public static partial class MyLinqExtensions
     {
+        /// <summary>
+        /// Place <paramref name="arg"/> as the first element of the sequence.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<T></param>
+        /// <param name="arg">Argument to put as first element of the sequence</param>
+        /// <returns>IEnumerable<T> with <paramref name="arg"/> prepended</returns>
         public static IEnumerable<T> MyPrepend<T>(this IEnumerable<T> lst, T arg)
         {
             yield return arg;
