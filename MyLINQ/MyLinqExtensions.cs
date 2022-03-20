@@ -25,6 +25,15 @@ namespace MyLINQ
                 yield return el;
             }
         }
+
+        /// <summary>
+        /// Place <paramref name="arg"/> as the last element of the sequence.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<T></param>
+        /// <param name="arg">Argument to put as last element of the sequence</param>
+        /// <returns>IEnumerable<T> with <paramref name="arg"/> prepended</returns>
         public static IEnumerable<T> MyAppend<T>(this IEnumerable<T> lst, T arg)
         {
             foreach (var el in lst)
@@ -33,8 +42,19 @@ namespace MyLINQ
             }
             yield return arg;
         }
+
+        /// <summary>
+        ///  Concatenates two sequences.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst1">Input IEnumerable<T></param>
+        /// <param name="lst2">Argument to put as last element of the sequence</param>
+        /// <returns>IEnumerable<T> with <paramref name="arg"/> prepended</returns>
         public static IEnumerable<T> MyConcat<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
         {
+            if (lst2 == null)
+                throw new ArgumentNullException(nameof(lst2), "Value cannot be null.");
             foreach (var el in lst1)
             {
                 yield return el;
@@ -84,10 +104,10 @@ namespace MyLINQ
             }
             return false;
         }
-        public static T MyAggregate<T>(this IEnumerable<T> lst, Func<T, T, T> func)
+        public static T? MyAggregate<T>(this IEnumerable<T> lst, Func<T?, T, T> func)
         {
             ThrowIfEmpty(lst);
-            T result = default;
+            T? result = default;
             foreach (var el in lst)
             {
                 result = func(result, el);
@@ -223,13 +243,13 @@ namespace MyLINQ
                 inKeyValueList.Add((makeKeyIn(el), el));
             }
 
-            foreach (var el1 in outKeyValueList)
+            foreach (var (keyOut, valueOut) in outKeyValueList)
             {
-                foreach (var el2 in inKeyValueList)
+                foreach (var (keyIn, valueIn) in inKeyValueList)
                 {
-                    if (el1.keyOut.Equals(el2.keyIn))
+                    if (Equals(keyOut, keyIn))
                     {
-                        yield return makeRes(el1.valueOut, el2.valueIn);
+                        yield return makeRes(valueOut, valueIn);
                     }
                 }
             }
@@ -259,7 +279,7 @@ namespace MyLINQ
                 var listValue = new List<TList>();
                 foreach (var el in source)
                 {
-                    if (key.Equals(keyMaker(el)))
+                    if (Equals(key, keyMaker(el)))
                         listValue.Add(el);
                 }
                 yield return new MyGrouping<TKey, TList>(key, listValue);
@@ -301,14 +321,14 @@ namespace MyLINQ
         {
             foreach (var el in lst)
             {
-                if (el.Equals(val)) return true;
+                if (Equals(el, val)) return true;
             }
             return false;
         }
-        public static T MyElementAt<T>(this IEnumerable<T> lst, int index)
+        public static T? MyElementAt<T>(this IEnumerable<T> lst, int index)
         {
             if (index < 0 || index >= lst.Count())
-                throw new ArgumentOutOfRangeException("Index was out of range. Must be non-negative and less than the size of the collection.");
+                throw new ArgumentOutOfRangeException(nameof(index), "Index was out of range. Must be non-negative and less than the size of the collection.");
             var current = 0;
             foreach (var el in lst)
             {
@@ -330,7 +350,7 @@ namespace MyLINQ
             {
                 foreach (var el2 in lst2)
                 {
-                    if (el1.Equals(el2) && (!result.Contains(el1)))
+                    if (Equals(el1, el2) && (!result.Contains(el1)))
                         result.Add(el1);
                 }
             }
@@ -346,7 +366,7 @@ namespace MyLINQ
             {
                 foreach (var el2 in lst2)
                 {
-                    if (el1.Equals(el2))
+                    if (Equals(el1, el2))
                     {
                         result.Remove(el1);
                     }
@@ -378,7 +398,7 @@ namespace MyLINQ
             var em2 = lst2.GetEnumerator();
             while (em1.MoveNext() && em2.MoveNext())
             {
-                if (!em1.Current.Equals(em2.Current))
+                if (!Equals(em1.Current, em2.Current))
                     return false;
             }
             return true;

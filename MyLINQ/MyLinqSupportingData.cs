@@ -12,25 +12,18 @@ namespace MyLINQ
         #region GroupBy
         private class MyGrouping<TKey, TElement> : IGrouping<TKey, TElement>
         {
-            private readonly TKey key;
-            private readonly IEnumerable<TElement> values;
+            IEnumerable<TElement> Values { get; }
 
             public MyGrouping(TKey key, IEnumerable<TElement> values)
             {
-                if (values == null)
-                {
-                    throw new ArgumentNullException("List of elements cannot be null");
-                }
-                this.key = key;
-                this.values = values;
+                Values = values ?? throw new ArgumentNullException(nameof(values), "List of elements cannot be null.");
                 Key = key;
             }
 
             public TKey Key { get; }
-
             public IEnumerator<TElement> GetEnumerator()
             {
-                return values.GetEnumerator();
+                return Values.GetEnumerator();
             }
             IEnumerator IEnumerable.GetEnumerator()
             {
@@ -60,9 +53,10 @@ namespace MyLINQ
 
             public IOrderedEnumerable<TElement> CreateOrderedEnumerable<TKey>(
                 Func<TElement, TKey> keySelector,
-                IComparer<TKey> comparer, bool descending)
+                IComparer<TKey>? comparer, bool descending)
             {
-                return SortedLst?.MyOrderBy(keySelector, comparer, descending);
+                IComparer<TKey> nonNullComparer = comparer ?? Comparer<TKey>.Default;
+                return SortedLst.MyOrderBy(keySelector, nonNullComparer, descending);
             }
 
             public IEnumerator<TElement> GetEnumerator()
@@ -79,17 +73,18 @@ namespace MyLINQ
         // Alternative MyOrderBy version
         public static IOrderedEnumerable<TElement> MyOrderBy<TElement>(
             this IEnumerable<TElement> lst,
-            IComparer<TElement> comparer, bool descending = false)
+            IComparer<TElement>? comparer, bool descending = false)
         {
+            IComparer<TElement> nonNullComparer = comparer ?? Comparer<TElement>.Default;
             Func<TElement, TElement, int> compare = (el1, el2) =>
             {
                 if (!descending)
                 {
-                    return comparer.Compare(el1, el2);
+                    return nonNullComparer.Compare(el1, el2);
                 }
                 else
                 {
-                    return comparer.Compare(el2, el1);
+                    return nonNullComparer.Compare(el2, el1);
                 }
             };
 
@@ -98,7 +93,7 @@ namespace MyLINQ
         #endregion
         public static void ThrowIfEmpty<T>(IEnumerable<T> lst)
         {
-            if (lst.Count() == 0)
+            if (!lst.Any())
                 throw new InvalidOperationException("Sequence contains no elements");
         }
 
