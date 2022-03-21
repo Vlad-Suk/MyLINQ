@@ -94,7 +94,7 @@ namespace MyLINQ
         public static void ThrowIfEmpty<T>(IEnumerable<T> lst)
         {
             if (!lst.Any())
-                throw new InvalidOperationException("Sequence contains no elements");
+                throw new InvalidOperationException("Sequence contains no elements.");
         }
 
     }

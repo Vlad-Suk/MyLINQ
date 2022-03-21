@@ -48,13 +48,11 @@ namespace MyLINQ
         ///
         /// Takes O(n) in time and O(1) in memory.
         /// </summary>
-        /// <param name="lst1">Input IEnumerable<T></param>
-        /// <param name="lst2">Argument to put as last element of the sequence</param>
-        /// <returns>IEnumerable<T> with <paramref name="arg"/> prepended</returns>
+        /// <param name="lst1">First input IEnumerable<T></param>
+        /// <param name="lst2">Second input IEnumerable<T></param>
+        /// <returns>IEnumerable<T> Concatenated two sequences/</returns>
         public static IEnumerable<T> MyConcat<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
         {
-            if (lst2 == null)
-                throw new ArgumentNullException(nameof(lst2), "Value cannot be null.");
             foreach (var el in lst1)
             {
                 yield return el;
@@ -64,6 +62,16 @@ namespace MyLINQ
                 yield return el;
             }
         }
+        /// <summary>
+        /// Method returns the maximum value in a sequence of <see cref="int">.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<int></param>
+        /// <returns>The maximum value in a sequence.</returns>
+        /// <exeption cref = "InvalidOperationException">
+        /// Sequence contains no elements.
+        /// </exeption>
         public static int MyMax(this IEnumerable<int> lst)
         {
             ThrowIfEmpty(lst);
@@ -75,6 +83,16 @@ namespace MyLINQ
             }
             return max;
         }
+        /// <summary>
+        /// Method returns the minimum value in a sequence of <see cref="int">.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<int></param>
+        /// <returns>The minimum value in a sequence.</returns>
+        /// <exeption cref = "InvalidOperationException">
+        /// Sequence contains no elements.
+        /// </exeption>
         public static int MyMin(this IEnumerable<int> lst)
         {
             ThrowIfEmpty(lst);
@@ -86,6 +104,16 @@ namespace MyLINQ
             }
             return min;
         }
+        /// <summary>
+        /// Determines whether all elements of a sequence satisfy a condition.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<T></param>
+        /// <param name="predicate">Input lambda expression.</param>
+        /// <returns><see cref="true"> if every elements of the source sequence passes the test 
+        /// in the specified predicate, or if the sequence is empty; otherwise <see cref="false">.</returns>
+
         public static bool MyAll<T>(this IEnumerable<T> lst, Func<T, bool> predicate)
         {
             foreach (var el in lst)
@@ -95,6 +123,16 @@ namespace MyLINQ
             }
             return true;
         }
+        /// <summary>
+        /// Determines whether any element of a sequence satisfy a condition.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<T></param>
+        /// <param name="predicate">Input lambda expression.</param>
+        /// <returns><see cref="true"> if least of its elements of the source sequence passes the test 
+        /// in the specified predicate, or if the sequence is not empty; otherwise <see cref="false">.</returns>
+
         public static bool MyAny<T>(this IEnumerable<T> lst, Func<T, bool> predicate)
         {
             foreach (var el in lst)
@@ -104,6 +142,17 @@ namespace MyLINQ
             }
             return false;
         }
+        /// <summary>
+        /// Applies an accumulator function over the sequence.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<T></param>
+        /// <param name="func">Input lambda expression.</param>
+        /// <returns>The final accumulator value.</returns>
+        /// <exeption cref = "InvalidOperationException">
+        /// Sequence contains no elements.
+        /// </exeption>
         public static T? MyAggregate<T>(this IEnumerable<T> lst, Func<T?, T, T> func)
         {
             ThrowIfEmpty(lst);
@@ -114,6 +163,16 @@ namespace MyLINQ
             }
             return result;
         }
+        /// <summary>
+        /// Computes the average of a sequence of <see cref="int"/>.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<int></param>
+        /// <returns>The average of the sequence of values.</returns>
+        /// <exeption cref = "InvalidOperationException">
+        /// Sequence contains no elements.
+        /// </exeption>
         public static double MyAverage(this IEnumerable<int> lst)
         {
             ThrowIfEmpty(lst);
@@ -124,6 +183,13 @@ namespace MyLINQ
             }
             return sum / lst.Count();
         }
+        /// <summary>
+        /// Returns distinct elements from a sequence by using the default equality comparer to compare velues.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<T></param>
+        /// <returns>An IEnumerable<T> that contains distinct elements from the source sequence.</returns>
         public static IEnumerable<T> MyDistinct<T>(this IEnumerable<T> lst)
         {
             var result = new List<T>();
@@ -134,6 +200,17 @@ namespace MyLINQ
             }
             return result;
         }
+        /// <summary>
+        /// Returns the first element in a sequence that satisfies a specified condition.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<int></param>
+        /// <param name="predicate">Input lambda expression.</param>
+        /// <returns>The first element in the sequence that passes the test in the specified predicate function.</returns>
+        /// <exeption cref = "InvalidOperationException">
+        /// Sequence contains no matching element.
+        /// </exeption>
         public static T MyFirst<T>(this IEnumerable<T> lst, Func<T, bool> predicate)
         {
             foreach (var el in lst)
@@ -143,6 +220,17 @@ namespace MyLINQ
             }
             throw new InvalidOperationException("Sequence contains no matching element");
         }
+        /// <summary>
+        /// Returns the last element in a sequence that satisfies a specified condition.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<int></param>
+        /// <param name="predicate">Input lambda expression.</param>
+        /// <returns>The last element in the sequence that passes the test in the specified predicate function.</returns>
+        /// <exeption cref = "InvalidOperationException">
+        /// Sequence contains no matching element.
+        /// </exeption>
         public static T MyLast<T>(this IEnumerable<T> lst, Func<T, bool> predicate)
         {
             foreach (var el in lst.Reverse())
@@ -152,6 +240,15 @@ namespace MyLINQ
             }
             throw new InvalidOperationException("Sequence contains no matching element");
         }
+        /// <summary>
+        /// Projects each element of a sequence into a new form.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<int></param>
+        /// <param name="lambda">Input lambda expression.</param>
+        /// <returns>An IEnumerable<T> whose elements are the result of invoking the transform function on each element of source.</returns>
+
         public static IEnumerable<Tout> MySelect<Tin, Tout>(this IEnumerable<Tin> lst, Func<Tin, Tout> lambda)
         {
             foreach (var el in lst)
