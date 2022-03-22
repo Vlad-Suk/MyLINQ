@@ -205,7 +205,7 @@ namespace MyLINQ
         ///
         /// Takes O(n) in time and O(1) in memory.
         /// </summary>
-        /// <param name="lst">Input IEnumerable<int></param>
+        /// <param name="lst">Input IEnumerable<T></param>
         /// <param name="predicate">Input lambda expression.</param>
         /// <returns>The first element in the sequence that passes the test in the specified predicate function.</returns>
         /// <exeption cref = "InvalidOperationException">
@@ -225,7 +225,7 @@ namespace MyLINQ
         ///
         /// Takes O(n) in time and O(1) in memory.
         /// </summary>
-        /// <param name="lst">Input IEnumerable<int></param>
+        /// <param name="lst">Input IEnumerable<T></param>
         /// <param name="predicate">Input lambda expression.</param>
         /// <returns>The last element in the sequence that passes the test in the specified predicate function.</returns>
         /// <exeption cref = "InvalidOperationException">
@@ -245,7 +245,7 @@ namespace MyLINQ
         ///
         /// Takes O(n) in time and O(1) in memory.
         /// </summary>
-        /// <param name="lst">Input IEnumerable<int></param>
+        /// <param name="lst">Input IEnumerable<Tin></param>
         /// <param name="lambda">Input lambda expression.</param>
         /// <returns>An IEnumerable<T> whose elements are the result of invoking the transform function on each element of source.</returns>
 
@@ -256,6 +256,14 @@ namespace MyLINQ
                 yield return lambda(el);
             }
         }
+        /// <summary>
+        /// Projects each element of a sequence to <see cref="IEnumerable{TOut}"/> and flattens the resulting sequences in one sequence.
+        ///
+        /// Takes O(n*n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<Tin></param>
+        /// <param name="inElToTempOutLst">Input lambda expression.</param>
+        /// <returns>An IEnumerable<T> whose elements are the result of invoking the one-to-many transform function on each element of the input sequence.</returns>
         public static IEnumerable<Tout> MySelectMany<Tin, Tout>(this IEnumerable<Tin> lst,
             Func<Tin, IEnumerable<Tout>> inElToTempOutLst)
         {
@@ -266,33 +274,57 @@ namespace MyLINQ
                     yield return outEl;
             }
         }
-        public static IEnumerable<T> MySkip<T>(this IEnumerable<T> lst, int arg)
+        /// <summary>
+        /// Bypasses a specified number of elements in a sequence and than return the remaining elements.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<T></param>
+        /// <param name="countInput">Input number of values to skip.</param>
+        /// <returns>An IEnumerable<T> that contains the elements that occur after the specified index in the input sequence.</returns>
+        public static IEnumerable<T> MySkip<T>(this IEnumerable<T> lst, int countInput)
         {
             var count = 0;
             foreach (var el in lst)
             {
                 count++;
-                if (count <= arg)
+                if (count <= countInput)
                 {
                     continue;
                 }
                 yield return el;
             }
         }
-        public static IEnumerable<T> MySkipLast<T>(this IEnumerable<T> lst, int arg)
+        /// <summary>
+        /// Returns a new enumerable collection that contains the elements from source with the last count elements of the source collection omitted.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<T></param>
+        /// <param name="countInput">Input number of values to skip.</param>
+        /// <returns>An IEnumerable<T> that contains the elements from source minus count elements from the end of the collection.</returns>
+        public static IEnumerable<T> MySkipLast<T>(this IEnumerable<T> lst, int countInput)
         {
             var i = 0;
             var length = lst.Count();
             foreach (var el in lst)
             {
                 i++;
-                if (i > length - arg)
+                if (i > length - countInput)
                 {
                     yield break;
                 }
                 yield return el;
             }
         }
+        /// <summary>
+        /// Returns a specified numder of contiguous elements from the start of a sequence.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<T></param>
+        /// <param name="num">Input number of values to take.</param>
+        /// <returns>An IEnumerable<T> that contains the specified number of elements from the start of the input sequence.</returns>
         public static IEnumerable<T> MyTake<T>(this IEnumerable<T> lst, int num)
         {
             var counter = 0;
@@ -309,6 +341,14 @@ namespace MyLINQ
                 }
             }
         }
+        /// <summary>
+        /// Returns a new enumeeable collection that contains the last count elements from source.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<T></param>
+        /// <param name="num">Input number of values to take.</param>
+        /// <returns>An IEnumerable<T> that contains the last count elements from source.</returns>
         public static IEnumerable<T> MyTakeLast<T>(this IEnumerable<T> lst, int num)
         {
             var count = 0;
@@ -325,6 +365,14 @@ namespace MyLINQ
             foreach (var el in stack2)
                 yield return el;
         }
+        /// <summary>
+        /// Correlates the elements of two sequences based on matching keys.The default equality comparer is used to compare keys.
+        ///
+        /// Takes O(n*n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<T></param>
+        /// <param name="num">Input number of values to take.</param>
+        /// <returns>An IEnumerable<T> that contains the last count elements from source.</returns>
         public static IEnumerable<TRes> MyJoin<TOut, TIn, TKey, TRes>(this IEnumerable<TOut> outer,
            IEnumerable<TIn> inner, Func<TOut, TKey> makeKeyOut, Func<TIn, TKey> makeKeyIn, Func<TOut, TIn, TRes> makeRes)
         {
