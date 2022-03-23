@@ -342,9 +342,9 @@ namespace MyLINQ
             }
         }
         /// <summary>
-        /// Returns a new enumeeable collection that contains the last count elements from source.
+        /// Returns a new enumerable collection that contains the last count elements from source.
         ///
-        /// Takes O(n) in time and O(1) in memory.
+        /// Takes O(n) in time and O(n) in memory.
         /// </summary>
         /// <param name="lst">Input IEnumerable<T></param>
         /// <param name="num">Input number of values to take.</param>
@@ -368,11 +368,14 @@ namespace MyLINQ
         /// <summary>
         /// Correlates the elements of two sequences based on matching keys.The default equality comparer is used to compare keys.
         ///
-        /// Takes O(n*n) in time and O(1) in memory.
+        /// Takes O(n*n) in time and O(n) in memory.
         /// </summary>
-        /// <param name="lst">Input IEnumerable<T></param>
-        /// <param name="num">Input number of values to take.</param>
-        /// <returns>An IEnumerable<T> that contains the last count elements from source.</returns>
+        /// <param name="outer">Input outer IEnumerable<TOut></param>
+        /// <param name="inner">Input inner IEnumerable<TOut>.</param>
+        /// <param name="makeKeyOut">Input lambda to make key from IEnumerable<TOut></param>
+        /// <param name="makeKeyIn">Input lambda to make key from IEnumerable<TIn></param>
+        /// <param name="makeRes">Input lambda to make result from IEnumerable<TOut> and IEnumerable<TIn> using redy-made keys</param>
+        /// <returns>An IEnumerable<TRes> that has elements of type TRes that are obtained by performing an inner join or two sequences.</returns>
         public static IEnumerable<TRes> MyJoin<TOut, TIn, TKey, TRes>(this IEnumerable<TOut> outer,
            IEnumerable<TIn> inner, Func<TOut, TKey> makeKeyOut, Func<TIn, TKey> makeKeyIn, Func<TOut, TIn, TRes> makeRes)
         {
@@ -399,6 +402,15 @@ namespace MyLINQ
                 }
             }
         }
+        /// <summary>
+        /// Applies a specified function to the corresponding elements of two sequences producing a sequence of the result.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="firstLst">Input first IEnumerable<T></param>
+        /// <param name="secondLst">Input second IEnumerable<T></param>
+        /// <param name="makeRes">Lamda to make result TFirst and TSecond.</param>
+        /// <returns>An IEnumerable<TResult> that contains merged elements of two input sequences.</returns>
         public static IEnumerable<TResult> MyZip<TFirst, TSecond, TResult>(
         this IEnumerable<TFirst> firstLst, IEnumerable<TSecond> secondLst, Func<TFirst, TSecond, TResult> makeRes)
         {
@@ -410,6 +422,14 @@ namespace MyLINQ
                 yield return makeRes(firstEnumerator.Current, secondEnumerator.Current);
             }
         }
+        /// <summary>
+        /// Groups elements of two sequences according to a specify key selector function.
+        ///
+        /// Takes O(n*n) in time and O(n) in memory.
+        /// </summary>
+        /// <param name="source">Input source IEnumerable<T></param>
+        /// <param name="keyMaker">Lamda to make TKey from TList.</param>
+        /// <returns>An IEnumerable<IGrouping<TKey, TList>> where each <IGrouping<TKey, TList>> object contains a sequence of objects and a key.</returns>
         public static IEnumerable<IGrouping<TKey, TList>> MyGroupBy<TKey, TList>
             (this IEnumerable<TList> source, Func<TList, TKey> keyMaker)
         {
@@ -430,19 +450,33 @@ namespace MyLINQ
                 yield return new MyGrouping<TKey, TList>(key, listValue);
             }
         }
-
+        /// <summary>
+        /// Sorts elements of a sequence in ascending order according to a key.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<TElement></param>
+        /// <param name="keySelector">Lamda to make TKey from TElement.</param>
+        /// <returns>An IOrderedEnumerable<TElement> whose elements sorted according to a key.</returns>
         public static IOrderedEnumerable<TElement> MyOrderBy<TElement, TKey>(
-            this IEnumerable<TElement> lst, Func<TElement, TKey> ketSelector)
+            this IEnumerable<TElement> lst, Func<TElement, TKey> keySelector)
             where TKey : IComparable<TKey>
         {
             Func<TElement, TElement, int> compare = (el1, el2) =>
             {
-                return ketSelector(el1).CompareTo(ketSelector(el2));
+                return keySelector(el1).CompareTo(keySelector(el2));
             };
 
             return new MyOrder<TElement>(QuickSort(lst, compare));
         }
-
+        /// <summary>
+        /// Sorts elements of a sequence in ascending order according to a key.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<TElement></param>
+        /// <param name="keySelector">Lamda to make TKey from TElement.</param>
+        /// <returns>An IOrderedEnumerable<TElement> whose elements sorted according to a key.</returns>
         public static IOrderedEnumerable<TElement> MyOrderBy<TElement, TKey>(
             this IEnumerable<TElement> lst, Func<TElement, TKey> keySelector,
             IComparer<TKey> comparer, bool descending = false)
@@ -461,7 +495,13 @@ namespace MyLINQ
 
             return new MyOrder<TElement>(QuickSort(lst, compare));
         }
-
+        /// <summary>
+        /// Determines whether a sequence contains a specified element by using the default equality comparer.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable<TElement></param>
+        /// <returns><see cref="true"/> if sequence contains an element that has specified element; otherwise <see cref="false"/>.</returns>
         public static bool MyContains<T>(this IEnumerable<T> lst, T val)
         {
             foreach (var el in lst)
@@ -470,6 +510,14 @@ namespace MyLINQ
             }
             return false;
         }
+        /// <summary>
+        /// Returns the element at a specified index in a sequence.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst">Input IEnumerable.<TElement></param>
+        /// <param name="index">Index in a sequence.</param>
+        /// <returns>The element at the specified position in the soruce sequence.</returns>
         public static T? MyElementAt<T>(this IEnumerable<T> lst, int index)
         {
             if (index < 0 || index >= lst.Count())
@@ -483,6 +531,15 @@ namespace MyLINQ
             }
             return default;
         }
+        /// <summary>
+        /// Applies a specified function to the corresponding elements of two sequences producing a sequence of the result.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="firstLst">Input first IEnumerable<T></param>
+        /// <param name="secondLst">Input second IEnumerable<T></param>
+        /// <param name="makeRes">Lamda to make result TFirst and TSecond.</param>
+        /// <returns>An IEnumerable<TResult> that contains merged elements of two input sequences.</returns>
         public static IEnumerable<T> MyUnion<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
         {
             var result = lst1.Concat(lst2);
