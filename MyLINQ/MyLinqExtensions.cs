@@ -414,8 +414,8 @@ namespace MyLINQ
         public static IEnumerable<TResult> MyZip<TFirst, TSecond, TResult>(
         this IEnumerable<TFirst> firstLst, IEnumerable<TSecond> secondLst, Func<TFirst, TSecond, TResult> makeRes)
         {
-            var firstEnumerator = firstLst.GetEnumerator();
-            var secondEnumerator = secondLst.GetEnumerator();
+            using IEnumerator<TFirst> firstEnumerator = firstLst.GetEnumerator();
+            using IEnumerator<TSecond> secondEnumerator = secondLst.GetEnumerator();
 
             while (firstEnumerator.MoveNext() && secondEnumerator.MoveNext())
             {
@@ -642,8 +642,8 @@ namespace MyLINQ
         {
             if (lst1.Count() != lst2.Count())
                 return false;
-            var em1 = lst1.GetEnumerator();
-            var em2 = lst2.GetEnumerator();
+            using IEnumerator<T> em1 = lst1.GetEnumerator();
+            using IEnumerator<T> em2 = lst2.GetEnumerator();
             while (em1.MoveNext() && em2.MoveNext())
             {
                 if (!Equals(em1.Current, em2.Current))
