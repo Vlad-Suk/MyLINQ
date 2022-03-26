@@ -532,19 +532,26 @@ namespace MyLINQ
             return default;
         }
         /// <summary>
-        /// Applies a specified function to the corresponding elements of two sequences producing a sequence of the result.
+        /// Producec the set union of two sequences by using the default equality.
         ///
-        /// Takes O(n) in time and O(1) in memory.
+        /// Takes O(n) in time and O(n) in memory.
         /// </summary>
-        /// <param name="firstLst">Input first IEnumerable<T></param>
-        /// <param name="secondLst">Input second IEnumerable<T></param>
-        /// <param name="makeRes">Lamda to make result TFirst and TSecond.</param>
-        /// <returns>An IEnumerable<TResult> that contains merged elements of two input sequences.</returns>
+        /// <param name="lst1">Input first IEnumerable<T></param>
+        /// <param name="lst2">Input second IEnumerable<T></param>
+        /// <returns>An IEnumerable<T> that contains the elements from both input sequnces, excluding duplicates.</returns>
         public static IEnumerable<T> MyUnion<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
         {
             var result = lst1.Concat(lst2);
             return result.Distinct().ToList();
         }
+        /// <summary>
+        /// Producec the set intersection of two sequences by using the default equality.
+        ///
+        /// Takes O(n*n) in time and O(n) in memory.
+        /// </summary>
+        /// <param name="lst1">Input first IEnumerable<T></param>
+        /// <param name="lst2">Input second IEnumerable<T></param>
+        /// <returns>An IEnumerable<T> that contains the elements that form the set intersection of two sequences.</returns>
         public static IEnumerable<T> MyIntersect<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
         {
             var result = new List<T>();
@@ -558,6 +565,14 @@ namespace MyLINQ
             }
             return result;
         }
+        /// <summary>
+        /// Producec the set difference of two sequences by usinng the default equality comparer to compare values.
+        ///
+        /// Takes O(n*n) in time and O(n) in memory.
+        /// </summary>
+        /// <param name="lst1">Input first IEnumerable<T></param>
+        /// <param name="lst2">Input second IEnumerable<T></param>
+        /// <returns>An IEnumerable<T> that contains the set difference of the elements of two sequences.</returns>
         public static IEnumerable<T> MyExcept<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
         {
             var distinct = lst1.Distinct();
@@ -576,6 +591,13 @@ namespace MyLINQ
             }
             return result;
         }
+        /// <summary>
+        /// Cast the elements of Enumerable to the specisued type.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="source">Input source IEnumerable</param>
+        /// <returns>An IEnumerable<TRes> that contains each element of the source sequence cast to the spesified type.</returns>
         public static IEnumerable<TRes> MyCast<TRes>(this IEnumerable source)
         {
             foreach (var el in source)
@@ -583,6 +605,13 @@ namespace MyLINQ
                 yield return (TRes)el;
             }
         }
+        /// <summary>
+        /// Filters the elements of an Enumerable based on a specified type.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="source">Input source IEnumerable</param>
+        /// <returns>An IEnumerable<TRes> that contains elements from the input sequence of type TRes.</returns>
         public static IEnumerable<TRes> MyOfType<TRes>(this IEnumerable source)
         {
             foreach (object el in source)
@@ -591,7 +620,24 @@ namespace MyLINQ
                     yield return result;
             }
         }
+        /// <summary>
+        /// Returns the input typed as IEnumerable<T>.
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="source">Input source IEnumerable<T></param>
+        /// <returns>The input sequence typed as IEnumerable<T>.</returns>
         public static IEnumerable<T> MyAsEnumerable<T>(this IEnumerable<T> source) => source;
+
+        /// <summary>
+        /// Determines whether two sequences are equal by comparing the elements by using the default equality comparer
+        ///
+        /// Takes O(n) in time and O(1) in memory.
+        /// </summary>
+        /// <param name="lst1">Input first IEnumerable<T></param>
+        /// <param name="lst2">Input second IEnumerable<T></param>
+        /// <returns><see cref="true"/> if the two source sequnces are of equel lenght and their corresponding elements are 
+        /// equal according to the default equeality comparer for their type; otherwise <see cref="false"/></returns>
         public static bool MySequenceEqual<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
         {
             if (lst1.Count() != lst2.Count())
@@ -605,6 +651,13 @@ namespace MyLINQ
             }
             return true;
         }
+        /// <summary>
+        /// Inverts the order of the elements in a sequence.
+        ///
+        /// Takes O(n) in time and O(n) in memory.
+        /// </summary>
+        /// <param name="lst">Input source IEnumerable<T></param>
+        /// <returns>A sequence whose elements correspond to those of the input sequence in reverse order.</returns>
         public static IEnumerable<T> MyReverse<T>(this IEnumerable<T> lst)
         {
             var stackLst = new Stack<T>(lst);
