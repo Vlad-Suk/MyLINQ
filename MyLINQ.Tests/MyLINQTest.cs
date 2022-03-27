@@ -61,7 +61,7 @@ namespace MyLINQ.Tests
         [Test]
         public void MyConcatTest()
         {
-            var inputListConcatListCollection = new List<(IEnumerable<int>?, IEnumerable<int>)>
+            var inputListConcatListCollection = new List<(IEnumerable<int>, IEnumerable<int>)>
             {
                 // adding to empty list
                 (new List<int> { }, new List<int> { 3 }),
@@ -70,16 +70,15 @@ namespace MyLINQ.Tests
                 (new List<int> { 1, 2, 3 }, new List<int> { }),
                 (new List<int> { 1, 2, 3 }, new List<int> { 3 }),
                 (new List<int> { 1, 2, 3 }, new List<int> { 1, 2, 3 }),
-                (null, new List<int> { 1, 2, 3 })
             };
 
             foreach (var (firstList, secondList) in inputListConcatListCollection)
             {
-                var actual = firstList?.AsEnumerable();
-                actual = actual?.MyConcat(secondList);
+                var actual = firstList.AsEnumerable();
+                actual = actual.MyConcat(secondList);
 
-                var expected = firstList?.AsEnumerable();
-                expected = expected?.Concat(secondList);
+                var expected = firstList.AsEnumerable();
+                expected = expected.Concat(secondList);
 
                 Assert.That(actual, Is.EquivalentTo(expected));
             }
