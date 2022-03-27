@@ -59,7 +59,7 @@ namespace MyLINQ.Tests
             }
         }
         [Test]
-        public void MyConcatTest()
+        public void MyConcatTest() // test concat without nullability
         {
             var inputListConcatListCollection = new List<(IEnumerable<int>, IEnumerable<int>)>
             {
