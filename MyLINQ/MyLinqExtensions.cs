@@ -186,7 +186,7 @@ namespace MyLINQ
         /// <summary>
         /// Returns distinct elements from a sequence by using the default equality comparer to compare velues.
         ///
-        /// Takes O(n) in time and O(1) in memory.
+        /// Takes O(n*n) in time and O(n) in memory.
         /// </summary>
         /// <param name="lst">Input IEnumerable<T></param>
         /// <returns>An IEnumerable<T> that contains distinct elements from the source sequence.</returns>
@@ -248,7 +248,6 @@ namespace MyLINQ
         /// <param name="lst">Input IEnumerable<Tin></param>
         /// <param name="lambda">Input lambda expression.</param>
         /// <returns>An IEnumerable<T> whose elements are the result of invoking the transform function on each element of source.</returns>
-
         public static IEnumerable<Tout> MySelect<Tin, Tout>(this IEnumerable<Tin> lst, Func<Tin, Tout> lambda)
         {
             foreach (var el in lst)
@@ -259,7 +258,7 @@ namespace MyLINQ
         /// <summary>
         /// Projects each element of a sequence to <see cref="IEnumerable{TOut}"/> and flattens the resulting sequences in one sequence.
         ///
-        /// Takes O(n*n) in time and O(1) in memory.
+        /// Takes O(n*n) in time and O(n) in memory.
         /// </summary>
         /// <param name="lst">Input IEnumerable<Tin></param>
         /// <param name="inElToTempOutLst">Input lambda expression.</param>
@@ -368,7 +367,7 @@ namespace MyLINQ
         /// <summary>
         /// Correlates the elements of two sequences based on matching keys.The default equality comparer is used to compare keys.
         ///
-        /// Takes O(n*n) in time and O(n) in memory.
+        /// Takes O(n*m) in time and O(n) in memory.
         /// </summary>
         /// <param name="outer">Input outer IEnumerable<TOut></param>
         /// <param name="inner">Input inner IEnumerable<TOut>.</param>
@@ -405,7 +404,7 @@ namespace MyLINQ
         /// <summary>
         /// Applies a specified function to the corresponding elements of two sequences producing a sequence of the result.
         ///
-        /// Takes O(n) in time and O(1) in memory.
+        /// Takes O(n) in time and O(n) in memory.
         /// </summary>
         /// <param name="firstLst">Input first IEnumerable<T></param>
         /// <param name="secondLst">Input second IEnumerable<T></param>
@@ -439,6 +438,7 @@ namespace MyLINQ
             {
                 keys.Add(keyMaker(el));
             }
+
             foreach (var key in keys.Distinct())
             {
                 var listValue = new List<TList>();
@@ -453,7 +453,7 @@ namespace MyLINQ
         /// <summary>
         /// Sorts elements of a sequence in ascending order according to a key.
         ///
-        /// Takes O(n) in time and O(1) in memory.
+        /// Takes O(n*log(n)) in time and O(1) in memory.
         /// </summary>
         /// <param name="lst">Input IEnumerable<TElement></param>
         /// <param name="keySelector">Lamda to make TKey from TElement.</param>
@@ -472,7 +472,7 @@ namespace MyLINQ
         /// <summary>
         /// Sorts elements of a sequence in ascending order according to a key.
         ///
-        /// Takes O(n) in time and O(1) in memory.
+        /// Takes O(n*log(n)) in time and O(1) in memory.
         /// </summary>
         /// <param name="lst">Input IEnumerable<TElement></param>
         /// <param name="keySelector">Lamda to make TKey from TElement.</param>
@@ -534,7 +534,7 @@ namespace MyLINQ
         /// <summary>
         /// Producec the set union of two sequences by using the default equality.
         ///
-        /// Takes O(n) in time and O(n) in memory.
+        /// Takes O(n*m) in time and O(n) in memory.
         /// </summary>
         /// <param name="lst1">Input first IEnumerable<T></param>
         /// <param name="lst2">Input second IEnumerable<T></param>
@@ -547,7 +547,7 @@ namespace MyLINQ
         /// <summary>
         /// Producec the set intersection of two sequences by using the default equality.
         ///
-        /// Takes O(n*n) in time and O(n) in memory.
+        /// Takes O(n*m) in time and O(n) in memory.
         /// </summary>
         /// <param name="lst1">Input first IEnumerable<T></param>
         /// <param name="lst2">Input second IEnumerable<T></param>
@@ -568,7 +568,7 @@ namespace MyLINQ
         /// <summary>
         /// Producec the set difference of two sequences by usinng the default equality comparer to compare values.
         ///
-        /// Takes O(n*n) in time and O(n) in memory.
+        /// Takes O(n*m) in time and O(n) in memory.
         /// </summary>
         /// <param name="lst1">Input first IEnumerable<T></param>
         /// <param name="lst2">Input second IEnumerable<T></param>
