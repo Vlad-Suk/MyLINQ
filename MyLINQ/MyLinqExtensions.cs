@@ -367,7 +367,7 @@ namespace MyLINQ
         /// <summary>
         /// Correlates the elements of two sequences based on matching keys.The default equality comparer is used to compare keys.
         ///
-        /// Takes O(n*m) in time and O(n) in memory.
+        /// Takes O(n*m) in time and O(n+m) in memory.
         /// </summary>
         /// <param name="outer">Input outer IEnumerable<TOut></param>
         /// <param name="inner">Input inner IEnumerable<TOut>.</param>
@@ -404,7 +404,7 @@ namespace MyLINQ
         /// <summary>
         /// Applies a specified function to the corresponding elements of two sequences producing a sequence of the result.
         ///
-        /// Takes O(n) in time and O(n) in memory.
+        /// Takes O(min(n,m)) in time and O(1) in memory.
         /// </summary>
         /// <param name="firstLst">Input first IEnumerable<T></param>
         /// <param name="secondLst">Input second IEnumerable<T></param>
@@ -534,7 +534,7 @@ namespace MyLINQ
         /// <summary>
         /// Producec the set union of two sequences by using the default equality.
         ///
-        /// Takes O(n*m) in time and O(n) in memory.
+        /// Takes O((n+m)^2) in time and O(n+m) in memory.
         /// </summary>
         /// <param name="lst1">Input first IEnumerable<T></param>
         /// <param name="lst2">Input second IEnumerable<T></param>
@@ -554,7 +554,7 @@ namespace MyLINQ
         /// <returns>An IEnumerable<T> that contains the elements that form the set intersection of two sequences.</returns>
         public static IEnumerable<T> MyIntersect<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
         {
-            var result = new List<T>();
+            var result = new HeshSet<T>();
             foreach (var el1 in lst1)
             {
                 foreach (var el2 in lst2)
@@ -566,7 +566,7 @@ namespace MyLINQ
             return result;
         }
         /// <summary>
-        /// Producec the set difference of two sequences by usinng the default equality comparer to compare values.
+        /// Produces the set difference of two sequences by usinng the default equality comparer to compare values.
         ///
         /// Takes O(n*m) in time and O(n) in memory.
         /// </summary>
@@ -575,8 +575,7 @@ namespace MyLINQ
         /// <returns>An IEnumerable<T> that contains the set difference of the elements of two sequences.</returns>
         public static IEnumerable<T> MyExcept<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
         {
-            var distinct = lst1.Distinct();
-            var result = distinct.ToList();
+            var result = lst1.ToHeshSet();
             lst1 = distinct.ToList();
 
             foreach (var el1 in lst1)
