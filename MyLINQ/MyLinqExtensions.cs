@@ -576,7 +576,7 @@ namespace MyLINQ
         public static IEnumerable<T> MyExcept<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
         {
             var result = lst1.ToHashSet();
-            lst1 = distinct.ToList();
+            lst1 = result.ToList();
 
             foreach (var el1 in lst1)
             {
