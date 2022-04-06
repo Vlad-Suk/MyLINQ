@@ -554,7 +554,7 @@ namespace MyLINQ
         /// <returns>An IEnumerable<T> that contains the elements that form the set intersection of two sequences.</returns>
         public static IEnumerable<T> MyIntersect<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
         {
-            var result = new HeshSet<T>();
+            var result = new HashSet<T>();
             foreach (var el1 in lst1)
             {
                 foreach (var el2 in lst2)
@@ -575,7 +575,7 @@ namespace MyLINQ
         /// <returns>An IEnumerable<T> that contains the set difference of the elements of two sequences.</returns>
         public static IEnumerable<T> MyExcept<T>(this IEnumerable<T> lst1, IEnumerable<T> lst2)
         {
-            var result = lst1.ToHeshSet();
+            var result = lst1.ToHashSet();
             lst1 = distinct.ToList();
 
             foreach (var el1 in lst1)
